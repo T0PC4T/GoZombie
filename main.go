@@ -17,30 +17,36 @@ func main() {
 		return
 	}
 
-	window, wErr := sdl.CreateWindow(
+	window, err := sdl.CreateWindow(
 		"gaming",
 		sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		screenWidth, screenHeight,
 		sdl.WINDOW_OPENGL)
 
-	if wErr != nil {
-		fmt.Println(wErr)
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
 	defer window.Destroy()
 
-	renderer, rErr := sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
-	if rErr != nil {
-		fmt.Println(wErr)
+	renderer, err := sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
 	defer renderer.Destroy()
 
-	sdl.LoadBMP
+	myPlayer, err := newPlayer(renderer)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer myPlayer.texture.Destroy()
 
 	for {
 		renderer.SetDrawColor(255, 0, 255, 255)
 		renderer.Clear()
+		myPlayer.draw(renderer)
 		renderer.Present()
 	}
 
