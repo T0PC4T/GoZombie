@@ -35,18 +35,40 @@ func main() {
 		return
 	}
 	defer renderer.Destroy()
-
-	myPlayer, err := newPlayer(renderer)
+	// Create Player
+	err = newPlayer(renderer)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	defer myPlayer.texture.Destroy()
+	// defer myPlayer.texture.Destroy()
+	// Create Zombie
+
+	// myMob, err := NewZombie(renderer)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+	// defer myMob.texture.Destroy()
 
 	for {
+		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
+			switch event.(type) {
+			case *sdl.QuitEvent:
+				return
+			}
+		}
+
 		renderer.SetDrawColor(255, 0, 255, 255)
 		renderer.Clear()
-		myPlayer.draw(renderer)
+
+		for _, e := range allElements {
+			for _, c := range e.components {
+				(*c).onUpdate()
+				(*c).onDraw(renderer)
+			}
+		}
+
 		renderer.Present()
 	}
 
